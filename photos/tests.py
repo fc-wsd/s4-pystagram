@@ -3,8 +3,10 @@ import os
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.conf import settings
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from .models import Photo
+from .forms import PhotoForm
 
 
 class PhotoTest(TestCase):
@@ -39,6 +41,34 @@ class PhotoTest(TestCase):
         with self.assertRaises(ValueError):
             new_photo2.user = 'hannal'
         self.assertIsNone(new_photo2.pk)
+
+    def test_save_photo_by_model_with_form(self):
+        form = PhotoForm(data={
+            'image': os.path.join(settings.MEDIA_ROOT, 'hannal.png'),
+            'description': 'asdf'
+        })
+        validation_result = form.is_valid()
+        self.assertFalse(validation_result)
+
+        with open(os.path.join(settings.MEDIA_ROOT, 'hannal.png'), 'rb') as fp:
+            form = PhotoForm(
+                {
+                    'description': 'asdf'
+                },
+                {
+                    'image': SimpleUploadedFile(fp.name, fp.read()),
+                },
+            )
+        validation_result = form.is_valid()
+        self.assertTrue(validation_result)
+        new_photo = form.save(commit=False)
+        new_photo.user = self.user1
+        new_photo.save()
+
+        self.assertIsNotNone(new_photo.pk)
+
+    def test_view_post_create_photo(self):
+        '/photos/create/'
 
 
 
