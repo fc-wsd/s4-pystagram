@@ -1,0 +1,88 @@
+{% extends 'layout.html' %}
+
+{% block page_title %}사진 게시물 작성{% endblock %}
+
+{% block body %}
+
+<script type="text/javascript">
+$(document).ready(function(e) {
+    $('#photo_form').submit(function(e) {
+        var image = $('#preview > img').attr('src');
+        if ( image ) {
+            $('#filtered_image').val(image);
+        }
+    });
+
+    $('input[type="file"]').change(function(e) {
+        var reader = new FileReader();
+
+        reader.onerror = function(e) { console.log(e); }
+        reader.onloadend = function(e) {
+            if ( (/^data\:image\/(jpeg|png);base64/i).test(e.target.result) ) {
+                $('#preview > img').attr('src', e.target.result).show();
+            }
+            else {
+                if ( e.total == 0 || e.loaded == 0 ) {
+                    alert('파일을 가져오지 못 했습니다.');
+                }
+                else {
+                    alert('허용된 사진 파일이 아닙니다.');
+                }
+                // $('#id_image_file').val('');
+            }
+        }
+        reader.readAsDataURL(this.files[0]);
+    });
+
+
+    $('#image_filter_buttons > button').click(function(e) {
+        switch ( $(this).val() ) {
+            case 'vintage':
+            case 'sepia':
+            case 'greenish':
+            case 'reddish':
+                if ( $('#preview > img').data('vintageJS') ) {
+                    $('#preview > img').data('vintageJS')
+                        .vintage(vintagePresets[$(this).val()]);
+                }
+                else {
+                    $('#preview > img').vintage(
+                        {
+                            onError: function() { console.log('vintage error'); },
+                            onStart: function() { console.log('filtering start'); },
+                            onStop: function() { console.log('filtering stop'); },
+                            mime: 'image/png'
+                        },
+                        vintagePresets[$(this).val()]
+                    );
+                }
+                break;
+        }
+        return false;
+    });
+
+});
+</script>
+
+<form method="POST" action="" id="photo_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="filtered_image" id="filtered_image" value="" />
+
+
+    <p><span>{{ form.image.label }}</span>{{ form.image }}</p>
+
+    <p><span>{{ form.description.label }}</span><br />
+    {{ form.description }}
+    </p>
+
+    <div id="preview"><img src="" /></div>
+    <p id="image_filter_buttons">
+        <button value="vintage">Vintage</button>
+        <button value="sepia">Sepia</button>
+    </p>
+    <p>
+        <input type="submit" value="사진 게시물 저장" />
+    </p>
+</form>
+
+{% endblock %}

@@ -7,6 +7,18 @@
 <img src="{{ photo.image.url }}" />
 
 <p>
+    {% if photo.like_set.exists %}
+        {% for like in photo.like_set.all %}
+            <span>{{ like.user }}</span>
+        {% endfor %}님이 좋아합니다.
+
+    <a href="{% url 'photos:like_photo' photo.pk %}">좋아요 취소</a>
+    {% else %}
+    <a href="{% url 'photos:like_photo' photo.pk %}">좋아요</a>
+    {% endif %}
+</p>
+
+<p>
     <span>{{ photo.user }}</span>
 </p>
 

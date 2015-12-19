@@ -15,3 +15,9 @@ class Comment(models.Model):
     photo = models.ForeignKey(Photo)
     content = models.TextField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Like(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    photo = models.ForeignKey(Photo)
+    created_at = models.DateTimeField(auto_now_add=True)
