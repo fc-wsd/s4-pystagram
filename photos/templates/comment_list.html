@@ -1,0 +1,13 @@
+
+{% for comment in comments %}
+    <p>
+        <span>{{ comment.user }}</span>
+        {{ comment.content }}
+
+    {% if request.user == comment.user or request.user.is_staff %}
+        <span><a href="{% url 'photos:delete_comment' pk=comment.pk %}">삭제</a></span>
+    {% endif %}
+    </p>
+{% empty %}
+    <p>첫 번째 댓글 주인공이 되어 보세요.</p>
+{% endfor %}

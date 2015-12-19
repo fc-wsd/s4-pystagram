@@ -1,0 +1,15 @@
+
+{% if request.user.is_authenticated %}
+<form method="POST" action="">
+    {% csrf_token %}
+
+    {{ comment_form.as_p }}
+
+    <p>
+        <input type="submit" value="댓글 저장" />
+    </p>
+</form>
+
+{% else %}
+    <p>로그인한 이용자만 댓글을 달 수 있습니다.</p>
+{% endif %}

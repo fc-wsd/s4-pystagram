@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% block page_title %}{{ photo.pk }}번 사진 게시물{% endblock %}
+
+{% block body %}
+
+<img src="{{ photo.image.url }}" />
+
+<p>
+    <span>{{ photo.user }}</span>
+</p>
+
+<p>
+    <span>{{ photo.description }}</span>
+</p>
+
+    {% include 'comment_list.html' %}
+
+    {% include 'comment_form.html' %}
+
+{% endblock %}

@@ -8,3 +8,10 @@ class Photo(models.Model):
     description = models.TextField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    photo = models.ForeignKey(Photo)
+    content = models.TextField(max_length=500)
+    created_at = models.DateTimeField(auto_now_add=True)
